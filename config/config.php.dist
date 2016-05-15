@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * @package BackupDB
+ * @author  Léopold Jacquot {@link https://www.leopoldjacquot.com}
+ */
+
+define('APPLICATION_KEY', '');
+define('APPLICATION_SECRET', '');
+define('CONSUMER_KEY', '');
+define('API_ENDPOINT', 'ovh-eu');
+define('DEBUG', false);
