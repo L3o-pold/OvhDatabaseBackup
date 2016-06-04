@@ -1,23 +1,17 @@
 BackupDB
 ========
 
-```
-#!bash
+Required
+---------
 
-Required:
+* [Create token](https://api.ovh.com/createToken/)
+    - GET /hosting/*
+    - GET /hosting/*/*/database
+    - POST /hosting/*/*/database/*/dump
+* Install dependencies composer update -o --no-dev
+* Edit and rename config.php.dist to config.php file with your credentials
 
-Create token https://api.ovh.com/createToken/
+Optionnal
+---------
 
-GET /hosting/web/
-GET /hosting/web/*/database
-POST /hosting/web/*/database/*/dump
-GET /hosting/web/*/database/*/dump
-GET /hosting/web/*/database/*/dump/*
-
-composer update -o --no-dev
-Edit and rename config.php.dist to config.php file
-
-Optionnal:
-
-Set a cron task
-```
+* Set a cron task
