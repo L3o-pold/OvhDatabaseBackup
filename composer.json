@@ -2,7 +2,9 @@
   "name": "L3o-pold/ovhdatabasebackup",
   "type": "script",
   "description": "Backup all database on a OVH webhosting account",
+  "keywords": [],
   "homepage": "https://www.leopoldjacquot.com",
+  "license": "MIT",
   "authors": [
     {
       "name": "Léopold Jacquot",
@@ -13,12 +15,12 @@
     "php": ">=5.3.3",
     "ovh/ovh": "~2.0.1"
   },
-  "autoload": {
-    "psr-4": {"OvhDatabaseBackup\\": "src/"}
-  },
   "require-dev": {
     "phpunit/phpunit": "4.*",
     "phpdocumentor/phpdocumentor": "2.*",
     "squizlabs/php_codesniffer": "1.*"
+  },
+  "autoload": {
+    "psr-4": {"OvhDatabaseBackup\\": "src/"}
   }
 }
