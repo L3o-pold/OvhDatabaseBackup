@@ -2,7 +2,8 @@
 
 namespace OvhDatabaseBackup;
 
-use \Ovh\Api;
+use Ovh\Api;
+use GuzzleHttp\Client;
 
 /**
  * @package Backup
@@ -11,8 +12,13 @@ use \Ovh\Api;
 class Backup
 {
 
+    const OVH_API_HOSTING_URL               = '/hosting/{host_type}';
+    const OVH_API_HOSTING_DATABASE_URL      = '/hosting/{host_type}/{host}/database';
+    const OVH_API_HOSTING_DATABASE_DUMP_URL = '/hosting/{host_type}/{host}/database/{database}/dump';
+    const OVH_HOSTING_TYPES                 = ['web', 'privateDatabase'];
+
     /**
-     * @var \Ovh\Api
+     * @var Api
      */
     private $ovhClient;
 
@@ -25,54 +31,69 @@ class Backup
             APPLICATION_KEY,
             APPLICATION_SECRET,
             API_ENDPOINT,
-            CONSUMER_KEY
+            CONSUMER_KEY,
+            new Client(
+                [
+                    'timeout'         => 60,
+                    'connect_timeout' => 10,
+                ]
+            )
         );
     }
+    
+    public function backupDatabase()
+    {
+        foreach (self::OVH_HOSTING_TYPES as $hostingType) {
 
-    /**
-     * @return bool
-     */
-    public function backupDatabase() {
-        $webHosting = $this->fetchWebHosting();
+            /**
+             * @var $hosting array<string> OVH hosting
+             */
+            $hosting = $this->fetchHosting($hostingType);
 
-        try {
-            foreach ($webHosting as $host) {
-                $databases = $this->fetchHostingDatabase($host);
+            foreach ($hosting as $host) {
+                
+                /**
+                 * @var $databases array<string> OVH hosting
+                 */
+                $databases = $this->fetchHostingDatabase($hostingType, $host);
 
                 foreach ($databases as $database) {
-                    $this->dumpDatabase($host, $database);
+                    $this->dumpDatabase($hostingType, $host, $database);
                 }
             }
-
-            return true;
-        } catch(\Exception $e) {
-            return false;
         }
     }
 
     /**
+     * @param string $hostingType
+     *
      * @return array
      */
-    private function fetchWebHosting() {
-        return $this->ovhClient->get('/hosting/web/');
+    private function fetchHosting($hostingType)
+    {
+        return $this->ovhClient->get(str_replace('{host_type}', $hostingType, self::OVH_API_HOSTING_URL));
     }
 
     /**
+     * @param string $hostingType
      * @param string $webHosting
      *
      * @return array
      */
-    private function fetchHostingDatabase($webHosting) {
-        return $this->ovhClient->get('/hosting/web/'.$webHosting.'/database');
+    private function fetchHostingDatabase($hostingType, $webHosting)
+    {
+        return $this->ovhClient->get(str_replace(['{host_type}', '{host}'], [$hostingType, $webHosting], self::OVH_API_HOSTING_DATABASE_URL));
     }
 
     /**
+     * @param string $hostingType
      * @param string $webHosting
      * @param string $database
      */
-    private function dumpDatabase($webHosting, $database) {
-         $this->ovhClient->post(
-            '/hosting/web/' . $webHosting . '/database/' . $database . '/dump',
+    private function dumpDatabase($hostingType, $webHosting, $database)
+    {
+        $this->ovhClient->post(
+            str_replace(['{host_type}', '{host}', '{database}'], [$hostingType, $webHosting, $database], OVH_API_HOSTING_DATABASE_DUMP_URL),
             [
                 'date' => 'now',
                 'sendEmail' => false,

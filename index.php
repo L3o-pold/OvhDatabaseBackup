@@ -13,11 +13,10 @@ if (defined('DEBUG') && DEBUG === true) {
     error_reporting(E_ALL);
 }
 
-$ovhBackup = new OvhDatabaseBackup\Backup();
-$status = $ovhBackup->backupDatabase();
-
-if ($status === true) {
+try {
+    $ovhBackup = new OvhDatabaseBackup\Backup();
+    $ovhBackup->backupDatabase();
     http_response_code(200);
-} else {
+} catch(Exception $e) {
     http_response_code(500);
 }
