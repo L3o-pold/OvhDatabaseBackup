@@ -92,12 +92,15 @@ class Backup
      */
     private function dumpDatabase($hostingType, $webHosting, $database)
     {
+        $options = ['sendEmail' => false];
+
+        if ($hostingType === 'web') {
+            $options['date'] = 'now';
+        }
+
         $this->ovhClient->post(
-            str_replace(['{host_type}', '{host}', '{database}'], [$hostingType, $webHosting, $database], OVH_API_HOSTING_DATABASE_DUMP_URL),
-            [
-                'date' => 'now',
-                'sendEmail' => false,
-            ]
+            str_replace(['{host_type}', '{host}', '{database}'], [$hostingType, $webHosting, $database], self::OVH_API_HOSTING_DATABASE_DUMP_URL),
+            $options
         );
     }
 }
