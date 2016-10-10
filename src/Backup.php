@@ -15,7 +15,7 @@ class Backup
     const OVH_API_HOSTING_URL               = '/hosting/{host_type}';
     const OVH_API_HOSTING_DATABASE_URL      = '/hosting/{host_type}/{host}/database';
     const OVH_API_HOSTING_DATABASE_DUMP_URL = '/hosting/{host_type}/{host}/database/{database}/dump';
-    const OVH_HOSTING_TYPES                 = ['web', 'privateDatabase'];
+    const OVH_HOSTING_TYPES                 = ['web'];
 
     /**
      * @var Api
